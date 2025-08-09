@@ -24,4 +24,7 @@ public class EmployeeService{
         employeeRepository.deleteById();
     }
 
+    public void updateEmployee(long id){
+        employeeRepository.save();
+    }
 }
