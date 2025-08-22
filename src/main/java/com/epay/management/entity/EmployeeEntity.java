@@ -1,5 +1,5 @@
 package com.epay.management.entity;
-
+import java.util.regex.*;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,4 +18,7 @@ public class EmployeeEntity {
     private String lastName;
     @Column(name = "age")
     private int age;
+    @Column(name = "email")
+    private String email;
 }
+

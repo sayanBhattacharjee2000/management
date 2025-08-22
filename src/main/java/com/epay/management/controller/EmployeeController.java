@@ -1,5 +1,4 @@
 package com.epay.management.controller;
-
 import com.epay.management.entity.EmployeeEntity;
 import com.epay.management.service.EmployeeService;
 import lombok.AllArgsConstructor;
@@ -27,17 +26,32 @@ public class EmployeeController {
     }
 
     @PostMapping(path = "/info")
-    public void addEmployee(@RequestBody EmployeeEntity employee){
-        employeeService.saveEmployee(employee);
+    public ResponseEntity<EmployeeEntity> addEmployee(@RequestBody EmployeeEntity employee) {
+        try {
+            EmployeeEntity employeeEntity = employeeService.saveEmployee(employee);
+            return new ResponseEntity<>(employeeEntity,HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 
     @PutMapping(path = "/info/{id}")
-    public void update(@PathVariable("id") Long id, @RequestBody EmployeeEntity employeeEntity){
-        employeeService.updateEmployee(id,employeeEntity);
+    public ResponseEntity<EmployeeEntity> update(@PathVariable("id") Long id, @RequestBody EmployeeEntity employeeEntity){
+        try{
+            EmployeeEntity employee = employeeService.updateEmployee(id,employeeEntity);
+            return new ResponseEntity<>(employee,HttpStatus.OK);
+        }catch (IllegalArgumentException exception){
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 
     @DeleteMapping(path = "/info/{id}")
-    public void delete(@PathVariable("id") Long id){
-        employeeService.deleteEmployee(id);
+    public ResponseEntity<String> delete(@PathVariable("id") Long id){
+        try{
+            employeeService.deleteEmployee(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }catch(IllegalArgumentException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
