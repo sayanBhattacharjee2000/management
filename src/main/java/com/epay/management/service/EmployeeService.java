@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -28,7 +30,12 @@ public class EmployeeService{
     }
 
     public void deleteEmployee(long id){
-        employeeRepository.deleteById(id);
+        Optional<EmployeeEntity> employee = employeeRepository.findById(id);
+        if(employee.isPresent()){
+            employeeRepository.deleteById(id);
+        }else {
+            throw new NoSuchElementException("employee not found on database");
+        }
     }
 
     public EmployeeEntity updateEmployee(long id, EmployeeEntity employee) {

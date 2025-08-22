@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("api/employee")
@@ -45,8 +46,8 @@ public class EmployeeController {
         try{
             employeeService.deleteEmployee(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }catch(IllegalArgumentException e){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch(NoSuchElementException exception){
+            return new ResponseEntity<>(exception.getMessage(),HttpStatus.NOT_FOUND);
         }
     }
 }
