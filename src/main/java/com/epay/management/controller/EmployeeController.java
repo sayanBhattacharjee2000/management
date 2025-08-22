@@ -17,12 +17,7 @@ public class EmployeeController {
 
     @GetMapping(path = "/info")
     public ResponseEntity<List<EmployeeEntity>> get(){
-        List<EmployeeEntity> employeeEntities = employeeService.getList();
-        if(employeeEntities.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }else {
-            return new ResponseEntity<>(employeeEntities,HttpStatus.OK);
-        }
+        return ResponseEntity.ok(employeeService.getList());
     }
 
     @PostMapping(path = "/info")
