@@ -21,11 +21,11 @@ public class EmployeeService{
         return employeeRepository.findAll();
     }
     
-    public EmployeeEntity saveEmployee(EmployeeEntity employee){
+    public void saveEmployee(EmployeeEntity employee){
         if(validator.isValidEmail(employee)){
             throw new IllegalArgumentException("Only Gmail addresses allowed");
         }else{
-            return employeeRepository.save(employee);
+            employeeRepository.save(employee);
         }
     }
 
@@ -38,7 +38,7 @@ public class EmployeeService{
         }
     }
 
-    public EmployeeEntity updateEmployee(long id, EmployeeEntity employee) {
+    public void updateEmployee(long id, EmployeeEntity employee) {
         EmployeeEntity employeeEntity = employeeRepository.findById(id).orElseThrow();
 
         if (validator.isValidEmail(employee)) {
@@ -48,8 +48,14 @@ public class EmployeeService{
             employeeEntity.setLastName(employee.getLastName());
             employeeEntity.setAge(employee.getAge());
             employeeEntity.setEmail(employee.getEmail());
-            return employeeRepository.save(employeeEntity);
+            employeeRepository.save(employeeEntity);
         }
     }
+
+    public EmployeeEntity getEmployeeById(Long id) {
+        return employeeRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Employee not found"));
+    }
+
 
 }

@@ -1,53 +1,62 @@
 package com.epay.management.controller;
+
 import com.epay.management.entity.EmployeeEntity;
 import com.epay.management.service.EmployeeService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-
-@RestController
-@RequestMapping("api/employee")
+@Controller
+@RequestMapping("/employee")
 @AllArgsConstructor
 public class EmployeeController {
 
-    private EmployeeService employeeService;
+    private final EmployeeService employeeService;
 
-    @GetMapping(path = "/info")
-    public ResponseEntity<List<EmployeeEntity>> get(){
-        return ResponseEntity.ok(employeeService.getList());
+    @GetMapping({"", "/"})
+    public String welcomePage() {
+        return "employee";
     }
 
-    @PostMapping(path = "/info")
-    public ResponseEntity<EmployeeEntity> addEmployee(@RequestBody EmployeeEntity employee) {
+    @GetMapping("/list")
+    public String getAllEmployees(Model model) {
+        model.addAttribute("employees", employeeService.getList());
+        return "employee-list";
+    }
+
+    @GetMapping("/add")
+    public String showAddForm(Model model) {
+        model.addAttribute("employee", new EmployeeEntity());
+        return "employee-form";
+    }
+
+    @PostMapping("/save")
+    public String saveEmployee(@ModelAttribute("employee") EmployeeEntity employee, Model model) {
         try {
-            EmployeeEntity employeeEntity = employeeService.saveEmployee(employee);
-            return new ResponseEntity<>(employeeEntity,HttpStatus.CREATED);
+            if (employee.getId() == null) {
+                employeeService.saveEmployee(employee);
+            } else {
+                employeeService.updateEmployee(employee.getId(), employee);
+            }
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("employee", employee);
+            return "employee-form";
         }
+        return "redirect:/employee/list";
     }
 
-    @PutMapping(path = "/info/{id}")
-    public ResponseEntity<EmployeeEntity> update(@PathVariable("id") Long id, @RequestBody EmployeeEntity employeeEntity){
-        try{
-            EmployeeEntity employee = employeeService.updateEmployee(id,employeeEntity);
-            return new ResponseEntity<>(employee,HttpStatus.OK);
-        }catch (IllegalArgumentException exception){
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable("id") Long id, Model model) {
+        model.addAttribute("employee", employeeService.getEmployeeById(id));
+        return "employee-form";
     }
 
-    @DeleteMapping(path = "/info/{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") Long id){
-        try{
-            employeeService.deleteEmployee(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }catch(NoSuchElementException exception){
-            return new ResponseEntity<>(exception.getMessage(),HttpStatus.NOT_FOUND);
-        }
+    @GetMapping("/delete/{id}")
+    public String deleteEmployee(@PathVariable("id") Long id) {
+        employeeService.deleteEmployee(id);
+        return "redirect:/employee/list";
     }
 }
+

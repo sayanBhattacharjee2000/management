@@ -1,5 +1,5 @@
 package com.epay.management.entity;
-import java.util.regex.*;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

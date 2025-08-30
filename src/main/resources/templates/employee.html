@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome - Employee Management</title>
+    <link rel="stylesheet" th:href="@{/css/employee.css}">
+</head>
+<body>
+<div class="container">
+    <h1>Welcome to Employee Management</h1>
+    <form th:action="@{/employee/list}" method="get">
+        <button type="submit" class="btn">See Employees</button>
+    </form>
+</div>
+</body>
+</html>
