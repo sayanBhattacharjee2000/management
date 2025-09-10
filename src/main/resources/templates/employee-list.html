@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <title>Employee Management</title>
@@ -9,7 +9,7 @@
 <div class="container">
     <h1>Employee Management</h1>
 
-    <div class="top-bar">
+    <div class="top-bar" sec:authorize="hasRole('ADMIN')">
         <a href="/employee/add" class="btn primary-btn">+ Add Employee</a>
     </div>
 
@@ -33,8 +33,10 @@
                 <td th:text="${employee.age}"></td>
                 <td th:text="${employee.email}"></td>
                 <td>
-                    <a th:href="@{/employee/edit/{id}(id=${employee.id})}" class="btn warning-btn">Edit</a>
-                    <a th:href="@{/employee/delete/{id}(id=${employee.id})}" class="btn danger-btn">Delete</a>
+                    <a th:href="@{/employee/edit/{id}(id=${employee.id})}"
+                       class="btn warning-btn" sec:authorize="hasRole('ADMIN')">Edit</a>
+                    <a th:href="@{/employee/delete/{id}(id=${employee.id})}"
+                       class="btn danger-btn" sec:authorize="hasRole('ADMIN')">Delete</a>
                 </td>
             </tr>
             </tbody>

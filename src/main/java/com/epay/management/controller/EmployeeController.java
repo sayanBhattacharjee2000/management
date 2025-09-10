@@ -19,6 +19,11 @@ public class EmployeeController {
         return "employee";
     }
 
+    @GetMapping("/403")
+    public String accessDenied() {
+        return "403";
+    }
+
     @GetMapping("/list")
     public String getAllEmployees(Model model) {
         model.addAttribute("employees", employeeService.getList());
