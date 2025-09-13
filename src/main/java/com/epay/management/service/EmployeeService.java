@@ -22,7 +22,7 @@ public class EmployeeService{
     }
     
     public void saveEmployee(EmployeeEntity employee){
-        if(validator.isValidEmail(employee)){
+        if(validator.isValidEmail(employee.getEmail())){
             throw new IllegalArgumentException("Only Gmail addresses allowed");
         }else{
             employeeRepository.save(employee);
@@ -41,7 +41,7 @@ public class EmployeeService{
     public void updateEmployee(long id, EmployeeEntity employee) {
         EmployeeEntity employeeEntity = employeeRepository.findById(id).orElseThrow();
 
-        if (validator.isValidEmail(employee)) {
+        if (validator.isValidEmail(employee.getEmail())) {
             throw new IllegalArgumentException("Only Gmail addresses allowed");
         }else{
             employeeEntity.setFirstName(employee.getFirstName());
