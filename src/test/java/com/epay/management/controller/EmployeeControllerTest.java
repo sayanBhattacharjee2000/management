@@ -1,30 +1,45 @@
 package com.epay.management.controller;
 
-import com.epay.management.entity.EmployeeEntity;
 import com.epay.management.service.EmployeeService;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+@WebMvcTest(EmployeeController.class)
 class EmployeeControllerTest {
 
-    EmployeeService employeeService = Mockito.mock(EmployeeService.class);
+    @Autowired
+    private MockMvc mockMvc;
 
+    @MockitoBean
+    private EmployeeService employeeService;
+
+    @DisplayName("Verify that when user visit employee site, he should get navigated to welcome " +
+            "page")
     @Test
-    void getAllEmployees() {
-       Mockito.when(employeeService.getList()).thenReturn(employeeList());
-       Assertions.assertEquals("subhajit@gmail.com",employeeList().get(0).getEmail());
+    void testWelcomePage_WhenUserGoToEmployeeSite_ShouldBeNavigatedToWelcomePage() throws Exception {
+        mockMvc.perform(get("/employee"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("employee"));
     }
 
-    private List<EmployeeEntity> employeeList(){
-        EmployeeEntity employeeEntity = new EmployeeEntity();
-        employeeEntity.setId(1L);
-        employeeEntity.setFirstName("Subhajit");
-        employeeEntity.setLastName("Bhattacharya");
-        employeeEntity.setEmail("subhajit@gmail.com");
-        employeeEntity.setAge(29);
-        return List.of(employeeEntity);
+    @DisplayName("Verify that when user visit employee site and click on view employee then he " +
+            "should" +
+            " get navigated to employee list")
+    @Test
+    void testGetAllEmployees_WhenUserClickOnViewList_ShouldBeNavigatedToEmployeeList() throws Exception {
+        mockMvc.perform(get("/employee/list"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("employee-list"));
+
+        Mockito.verify(employeeService,Mockito.times(1)).getList();
     }
 }
